@@ -1,0 +1,21 @@
+- name: Conditions
+  hosts: local
+  become: yes  # Work as root
+  tasks:
+    - name: check if user exit or not
+      ansible.builtin.command: id test_user
+      register: USER
+      ignore_errors: true
+
+    - name: print user information
+      ansible.builtin.debug:
+        msg: "User info : {{USER}}"
+
+    - name: create user
+      ansible.builtin.command: useradd test_user
+      when: USER.rc != 0
+
+    - name: say Hello
+      ansible.builtin.debug:
+        msg: "Hello"
+

@@ -1,0 +1,45 @@
+- name: Variables
+  hosts: localhost
+  vars:
+    Course: "Test Course" # Variable declarations
+  vars_files:
+   - 02.vars_files.yaml
+  vars_prompt:
+   - name: prompt_msg
+     prompt: Please enter msg for prompt
+     private: false
+     
+  tasks:
+    - name: Task level Vars
+      vars:
+       Course: Module Level Vars  # Task level vars
+      ansible.builtin.debug:
+        msg: "Task level => {{Course}}"
+    
+    - name: Vars File
+      ansible.builtin.debug:
+        msg: "Vars File => {{Var_file_course}}"
+
+    - name: Vars prompt
+      ansible.builtin.debug:
+        msg: "Vars Prompt => {{prompt_msg}}"
+
+    - name: Invetnory Vars
+      ansible.builtin.debug:
+        msg: "Vars Invetnory => {{INVENTORY_MSG}}"
+    
+    - name: Command Vars
+      ansible.builtin.debug:
+        msg: "Vars Command => {{test}}"
+
+
+# ansible-playbook -i inventory.ini 02.vars.yaml -e test=hello
+
+# VARS PREFERENCES
+# 1. arguments
+# 2. Task level
+# 3. variable files
+# 4. Prompt
+# 5. Play level
+# 6. inventory
+# 7. role level
