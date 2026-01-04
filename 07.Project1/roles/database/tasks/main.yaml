@@ -1,0 +1,11 @@
+---
+- name: Install MySQL
+  package:
+    name: "{{ mysql_package }}"
+    state: present
+
+- name: Start MySQL service
+  service:
+    name: "{{ 'mysql' if ansible_os_family == 'Debian' else 'mariadb' }}"
+    state: started
+    enabled: yes

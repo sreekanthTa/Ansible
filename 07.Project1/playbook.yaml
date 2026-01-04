@@ -1,0 +1,37 @@
+---
+- name: Install nginx
+  hosts: webservers
+  become: yes
+  tasks:
+  - name: Install nginx
+    package:
+      name: nginx
+      state: present
+  
+  - name: Start httpd service
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+ 
+  - name: Copy Nginx config from template
+    template:
+      src: templates/nginx.conf.j2
+      dest: "/etc/nginx/sites-available/express-app"
+      mode: '0644'
+
+  - name: Ensure symlink in sites-enabled
+    file:
+      src: "/etc/nginx/sites-available/express-app"
+      dest: "/etc/nginx/sites-enabled/express-app"
+      state: link
+      
+  - name: Test Nginx configuration
+    command: nginx -t
+    register: nginx_test
+    failed_when: "'successful' not in nginx_test.stderr"
+
+  - name: Reload Nginx
+    service:
+      name: nginx
+      state: reloaded
